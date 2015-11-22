@@ -12,33 +12,27 @@ def win_test(board):
     main_list = []
     
     #Get Diags
-    main_list.append([board[0][0],board[1][1],board[2][2]])
-    main_list.append([board[0][2],board[1][1],board[2][0]])
-
+    main_list.append([board[i][j] for i,j in zip(range(len(board)),range(len(board))[::-1])])
+    main_list.append([board[i][i] for i in range(len(board))])
     
     #Get Cols and Rows
-    cols = zip(board[0],board[1],board[2])
-    rows = board
+    main_list += zip(board[0],board[1],board[2])
+    main_list += board
 
-    #Merge lists
-    main_list += cols + rows
-
-    full = True
-    for lst in main_list:
-        combo = ''.join(lst)
-        if combo == 'XXX':
-            return True, 'X'
-        elif combo == 'OOO':
-            return True, 'O'
-        elif '.' in combo:
-            full = False
-    if full == True:
-        return True, 'Draw'
+    combo = [''.join(lst) for lst in main_list]
+    
+    if 'XXX' in combo or 'OOO' in combo:
+        return 1
+    elif '.' not in ''.join(combo):
+        return -1
     else:
-        return False, 0
+        return None
     
         
 def display_board(board):
+    board = [[i+1] + board[i] for i in range(len(board))]
+    board = [['', 'A','B','C']] + board
+    
     for i in board:
         print str(i) + '\n'
         
@@ -64,53 +58,51 @@ def get_next_move(board):
             print 'That space has already been taken!'
     
 def main():
+    
     #Initialize game
     player1_turn = True
-    player2_turn = False
-    print 'Py-Tac-Toe!!\n\n'
-    
     board = init_board()
 
-    while True:         #Main Game Loop
+    print """
+_______________.___.       ________________  _________         ___________________  ___________
+\______   \__  |   |       \__    ___/  _  \ \_   ___ \        \__    ___/\_____  \ \_   _____/
+ |     ___//   |   |  ______ |    | /  /_\  \/    \  \/   ______ |    |    /   |   \ |    __)_ 
+ |    |    \____   | /_____/ |    |/    |    \     \____ /_____/ |    |   /    |    \|        \\
+ |____|    / ______|         |____|\____|__  /\______  /         |____|   \_______  /_______  /
+           \/                              \/        \/                           \/        \/
+          
+          """
+    
+    #Main Game Loop
+    while True:
         
-        #Player 1 Turn
+        #bEGIN TURN
         display_board(board)
+        
         if player1_turn:
-            print 'Player 1!'
-            answer = get_next_move(board)
-            board[answer[0]][answer[1]] = 'X'
-            player1_turn = False
-            Player2_turn = True
-            
-            results = win_test(board)
-            
-            if results[0] == True:
-                if results[1] == 'X': 
-                    print '\n\nPlayer 1 is the winner!!!!!!!'
-                    display_board(board)
-                    return None
-                elif results[1] == 'Draw':
-                    print '\n\nDRAW!'
-                    display_board(board)
-                    return None
-        
-        #Player 2 Turn
+            num, char = (1, 'X')
         else:
-            print 'Player 2!'
-            answer = get_next_move(board)
-            board[answer[0]][answer[1]] = 'O'
-            player1_turn = True
-            Player2_turn = False
-            if results[0] == True:
-                if results[1] == 'O': 
-                    print '\n\nPlayer 2 is the winner!!!!!!!'
-                    display_board(board)
-                    return None
-                elif results[1] == 'Draw':
-                    print '\n\nDRAW!'
-                    display_board(board)
-                    return None
+            num, char = (2,'O')
         
+        print 'Player %i!' %num
+        
+        answer = get_next_move(board)
+        
+        board[answer[0]][answer[1]] = char
+        
+        player1_turn = not player1_turn
+            
+        results = win_test(board)
+            
+        if results == 1:
+            print '\n\nPlayer %i is the winner!!!!!!!' % (num)
+            display_board(board)
+            return None
+        elif results == -1:
+            print '\n\nDRAW!'
+            display_board(board)
+            return None
+
         
 if __name__ == '__main__':
     main()
