@@ -12,12 +12,12 @@ def win_test(board):
     main_list = []
     
     #Get Diags
-    main_list.append([board[i][j] for i,j in zip(range(len(board)),range(len(board))[::-1])])
-    main_list.append([board[i][i] for i in range(len(board))])
+    main_list.append([board[i][j] for i,j in zip(range(len(board)),range(len(board))[::-1])]) #left diag
+    main_list.append([board[i][i] for i in range(len(board))]) #right diag
     
     #Get Cols and Rows
-    main_list += zip(board[0],board[1],board[2])
-    main_list += board
+    main_list += zip(board[0],board[1],board[2]) #columns
+    main_list += board #rows
 
     combo = [''.join(lst) for lst in main_list]
     
@@ -33,8 +33,8 @@ def display_board(board):
     board = [[i+1] + board[i] for i in range(len(board))]
     board = [['', 'A','B','C']] + board
     
-    for i in board:
-        print str(i) + '\n'
+    for row in board:
+        print ''.join([str(space).rjust(5, " ") for space in row])
         
 def get_next_move(board):
     while True:
@@ -48,7 +48,10 @@ def get_next_move(board):
             row = raw_input("What row?\n\n-> ")
             try:
                 row = int(row)
-                break
+                if row == 1 or row == 2 or row == 3:
+                    break
+                else:
+                    print 'Please enter a number 1-3'
             except ValueError:
                 print 'Please enter a number 1-3'
                 
@@ -71,12 +74,16 @@ _______________.___.       ________________  _________         _________________
  |____|    / ______|         |____|\____|__  /\______  /         |____|   \_______  /_______  /
            \/                              \/        \/                           \/        \/
           
+          by David Jones
+          and Farhan Samani
+------------------------------------------------------------------------------------------------
+
           """
     
     #Main Game Loop
     while True:
         
-        #bEGIN TURN
+        #Begin Turn
         display_board(board)
         
         if player1_turn:
@@ -84,7 +91,7 @@ _______________.___.       ________________  _________         _________________
         else:
             num, char = (2,'O')
         
-        print 'Player %i!' %num
+        print '\nPlayer %i!' %num
         
         answer = get_next_move(board)
         
