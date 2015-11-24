@@ -40,7 +40,7 @@ def get_next_move(board):
     while True:
         while True:
             col = raw_input("What column would you like to place?\n\n-> ").upper()
-            if col == 'A' or col == 'B' or col == 'C':
+            if col in columns_dict.keys():
                 break      
             else: print "Please type A B or C"
         
@@ -48,7 +48,7 @@ def get_next_move(board):
             row = raw_input("What row?\n\n-> ")
             try:
                 row = int(row)
-                if row == 1 or row == 2 or row == 3:
+                if row in columns_dict.values():
                     break
                 else:
                     print 'Please enter a number 1-3'
